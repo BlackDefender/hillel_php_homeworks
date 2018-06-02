@@ -32,7 +32,7 @@
     <article class="mb-4">
         <h3><a href="<?= SITE_URL; ?>post.php?post_id=<?= $post->id; ?>"><?= $post->title; ?></a></h3>
         <div>
-            <?= $post->pub_date; ?>
+            <?= $post->getDate(); ?>
             <a href="<?= SITE_URL; ?>?user_id=<?= $post->user_id; ?>"><?= $post->user_name; ?></a>
         </div>
         <div><?= $post->getExcerpt(); ?></div>

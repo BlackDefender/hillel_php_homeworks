@@ -30,7 +30,7 @@
     <article>
         <h3><?= $post->title; ?></h3>
         <div>
-            <?= $post->pub_date; ?>
+            <?= $post->getDate(); ?>
             <a href="<?= SITE_URL; ?>?user_id=<?= $post->user_id; ?>"><?= $post->user_name; ?></a>
         </div>
         <div><?= $post->content; ?></div>
@@ -45,7 +45,7 @@
             foreach ($comments as $c):
                 ?>
                 <div class="mb-3">
-                    <div><?= $c->user_name; ?> at <?= $c->pub_date; ?></div>
+                    <div><?= $c->user_name; ?> at <?= $c->getDate(); ?></div>
                     <div><?= $c->text; ?></div>
                 </div>
             <?php
