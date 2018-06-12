@@ -1,12 +1,12 @@
 <?php
 
-class Users
+class UsersRepo
 {
-    private $connection;
 
-    public function __construct($connection)
+
+    private static function connection()
     {
-        $this->connection = $connection;
+        return DB::getConnection();
     }
 
 
@@ -32,7 +32,7 @@ class Users
         return htmlspecialchars(trim($value));
     }
 
-    public function register($name, $email, $password)
+    public static function register($name, $email, $password)
     {
         try {
             $newUser = new stdClass();
@@ -41,7 +41,7 @@ class Users
             $newUser->email = self::prepareValue($email);
             $newUser->password = self::getPasswordHash(self::prepareValue($password), $newUser->salt);
 
-            $statement = $this->connection->prepare("INSERT INTO users SET name = :name, email = :email, salt = :salt, password = :password");
+            $statement = self::connection()->prepare("INSERT INTO users SET name = :name, email = :email, salt = :salt, password = :password");
             $statement->execute([
                 ':name' => $newUser->name,
                 ':email' => $newUser->email,
@@ -49,19 +49,19 @@ class Users
                 ':password' => $newUser->password,
             ]);
 
-            $newUser->id = $this->connection->lastInsertId();
+            $newUser->id = self::connection()->lastInsertId();
             return $newUser;
         } catch (PDOException $e) {
             return false;
         }
     }
 
-    public function check($email, $password_raw)
+    public static function check($email, $password_raw)
     {
         try{
             $email = self::prepareValue($email);
 
-            $statement = $this->connection->prepare("SELECT * FROM users WHERE email = :email LIMIT 1");
+            $statement = self::connection()->prepare("SELECT * FROM users WHERE email = :email LIMIT 1");
             $statement->execute([
                 ':email' => $email
             ]);

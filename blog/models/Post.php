@@ -1,13 +1,10 @@
 <?php
 
-
 class Post
 {
-    private static $excerptLength = 300;
-
-    public function getExcerpt()
+    public function getExcerpt($excerptLength = 300)
     {
-        return substr(strip_tags($this->content), 0 , self::$excerptLength).'&hellip;';
+        return substr(strip_tags($this->content), 0 , $excerptLength).'&hellip;';
     }
 
     public function getDate()

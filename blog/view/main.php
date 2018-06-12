@@ -13,13 +13,16 @@
         <?php
         if(isset($_SESSION['user'])):
         ?>
-            <span class="text-monospace mr-3">Hello, <?= $_SESSION['user']->name; ?></span>
-            <a class="btn btn-lin" href="<?= SITE_URL; ?>logout.php">LogOut</a>
-            <a href="<?= SITE_URL; ?>add-post.php">Add post</a>
+            <span class="text-monospace mr-3">Hello,
+                <a href="<?= SITE_URL; ?>author/<?= $_SESSION['user']->id; ?>"><?= $_SESSION['user']->name; ?></a>
+
+            </span>
+            <a class="btn btn-lin" href="<?= SITE_URL; ?>user/logout">LogOut</a>
+            <a href="<?= SITE_URL; ?>post/add">Add post</a>
         <?php
         else:
         ?>
-            <a href="<?= SITE_URL; ?>login.php">Login</a> <div class="ml-2 mr-2">or</div> <a href="<?= SITE_URL; ?>register.php">Register</a>
+            <a href="<?= SITE_URL; ?>user/login">Login</a> <div class="ml-2 mr-2">or</div> <a href="<?= SITE_URL; ?>user/register">Register</a>
         <?php
         endif;
         ?>
@@ -30,10 +33,10 @@
     foreach ($posts as $post):
     ?>
     <article class="mb-4">
-        <h3><a href="<?= SITE_URL; ?>post.php?post_id=<?= $post->id; ?>"><?= $post->title; ?></a></h3>
+        <h3><a href="<?= SITE_URL; ?>post/<?= $post->id; ?>"><?= $post->title; ?></a></h3>
         <div>
             <?= $post->getDate(); ?>
-            <a href="<?= SITE_URL; ?>?user_id=<?= $post->user_id; ?>"><?= $post->user_name; ?></a>
+            <a href="<?= SITE_URL; ?>author/<?= $post->user_id; ?>"><?= $post->user_name; ?></a>
         </div>
         <div><?= $post->getExcerpt(); ?></div>
     </article>

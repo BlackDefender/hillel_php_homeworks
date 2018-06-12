@@ -14,14 +14,14 @@
         if(isset($_SESSION['user'])):
             ?>
             <span class="text-monospace mr-3">Hello, <?= $_SESSION['user']->name; ?></span>
-            <a class="btn btn-lin" href="<?= SITE_URL; ?>logout.php">LogOut</a>
+            <a class="btn btn-lin" href="<?= SITE_URL; ?>user/logout">LogOut</a>
         <?php
         endif;
         ?>
         <a class="ml-3" href="<?= SITE_URL; ?>"><- go back</a>
     </nav>
 
-    <form action="" method="post">
+    <form action="<?= SITE_URL; ?>post/add" method="post">
         <input class="form-control" type="text" name="title" placeholder="Title" required>
         <textarea class="form-control mt-3 mb-3" name="content" cols="30" rows="10" placeholder="Your Post" required></textarea>
         <input type="submit" value="Publish" class="btn btn-success">

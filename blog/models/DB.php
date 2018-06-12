@@ -1,18 +1,16 @@
 <?php
 
-
 class DB
 {
-    private $host = 'localhost';
-    private $user = 'root';
-    private $password = '';
-    private $dbname = "blog";
+    private static $instance = null;
+
+
     private $connection;
 
-    public function __construct()
+    private function __construct()
     {
         try {
-            $this->connection = new PDO("mysql:host=$this->host;dbname=$this->dbname", $this->user, $this->password);
+            $this->connection = new PDO('mysql:host='.Config::$db_host.';dbname='.Config::$db_name, Config::$db_user, Config::$db_password);
             $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
         catch(PDOException $e)
@@ -21,7 +19,11 @@ class DB
         }
     }
 
-    public function getConnection(){
-        return $this->connection;
+    public static function getConnection(){
+
+        if(self::$instance === null){
+            self::$instance = new self();
+        }
+        return self::$instance->connection;
     }
 }

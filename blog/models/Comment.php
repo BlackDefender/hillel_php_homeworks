@@ -2,10 +2,10 @@
 
 class Comment
 {
-    public function getDate()
+    public function getDate($format = 'd.m.Y H:i')
     {
-        $format = "Y-m-d H:i:s";
-        $dateobj = DateTime::createFromFormat($format, $this->pub_date);
-        return $dateobj->format('d.m.Y H:i');
+        $dbFormat = "Y-m-d H:i:s";
+        $dateObj = DateTime::createFromFormat($dbFormat, $this->pub_date);
+        return $dateObj->format($format);
     }
 }

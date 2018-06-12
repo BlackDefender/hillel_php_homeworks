@@ -9,7 +9,7 @@
 
 <main class="container pt-5">
     <div class="row justify-content-center">
-        <form action="<?= Config::getSiteUrl(); ?>login.php" method="post"  class="mb-4 col-4">
+        <form action="<?= Config::getSiteUrl(); ?>user/login" method="post"  class="mb-4 col-4">
             <h3 class="mb-2">Login</h3>
             <div class="form-group mb-2">
                 <input class="form-control" type="email" name="email" required placeholder="Email">
@@ -22,7 +22,7 @@
     </div>
     <div class="row justify-content-center">
         <div class="col-4">
-            <a href="<?= Config::getSiteUrl(); ?>register.php">Do not have account yet? Register!</a>
+            <a href="<?= Config::getSiteUrl(); ?>user/register">Do not have account yet? Register!</a>
         </div>
     </div>
 </main>
