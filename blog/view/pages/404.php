@@ -1,0 +1,1 @@
+<h1 class="mt-5 mb-5 text-center">404 not found</h1>

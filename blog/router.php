@@ -2,7 +2,6 @@
 
 class Router
 {
-
     public static function serve()
     {
         $routeStr = Config::getRequest();

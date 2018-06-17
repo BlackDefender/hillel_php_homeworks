@@ -5,10 +5,17 @@ class AuthorController
     public static function posts($id)
     {
         $posts = PostsRepo::getPostsByUser($id);
-        require_once 'view/main.php';
+        PageBuilder::build('main', ['posts' => $posts]);
     }
 
-    public static function comments($id){
-
+    public static function comments($userId)
+    {
+        $user = UsersRepo::getById($userId);
+        if($user){
+            $comments = CommentsRepo::getCommentsByAuthorId($userId);
+            PageBuilder::build('author-comments', ['comments' => $comments, 'user' => $user]);
+        }else{
+            PageBuilder::build('404');
+        }
     }
 }

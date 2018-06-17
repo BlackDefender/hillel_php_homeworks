@@ -7,24 +7,32 @@ class Config
     public static $db_password = '';
     public static $db_name = "blog";
 
-    private static function getSubDir(){
-        $scriptDir = realpath(dirname(dirname(__FILE__)));
-        $serverRootDir = realpath($_SERVER['DOCUMENT_ROOT']);
+    private static $siteUrl = null;
+    private static $subDir = null;
 
-        $subDir = substr($scriptDir, strlen($serverRootDir));
-        $subDir = str_replace('\\', "/", $subDir);
-        return trim($subDir, '/');
+    private static function getSubDir(){
+        if(!self::$subDir){
+            $scriptDir = realpath(dirname(dirname(__FILE__)));
+            $serverRootDir = realpath($_SERVER['DOCUMENT_ROOT']);
+            $subDir = substr($scriptDir, strlen($serverRootDir));
+            $subDir = str_replace('\\', "/", $subDir);
+            self::$subDir = trim($subDir, '/');
+        }
+        return self::$subDir;
     }
 
     public static function getSiteUrl()
     {
-        $subDir = self::getSubDir();
-        $requestScheme = (!empty($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on')) ? 'https' : 'http';
-        $siteUrl = $requestScheme.'://'.$_SERVER['HTTP_HOST'].'/';
-        if(!empty($subDir)){
-            $siteUrl .= $subDir.'/';
+        if(!self::$siteUrl){
+            $subDir = self::getSubDir();
+            $requestScheme = (!empty($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on')) ? 'https' : 'http';
+            $siteUrl = $requestScheme.'://'.$_SERVER['HTTP_HOST'].'/';
+            if(!empty($subDir)){
+                $siteUrl .= $subDir.'/';
+            }
+            self::$siteUrl = $siteUrl;
         }
-        return $siteUrl;
+        return self::$siteUrl;
     }
 
     public static function getRequest()

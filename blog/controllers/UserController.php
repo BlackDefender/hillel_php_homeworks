@@ -5,7 +5,7 @@ class UserController
     public static function login($data)
     {
         if (empty($data)) {
-            require_once './view/login.php';
+            PageBuilder::build('login');
             exit(0);
         }
 
@@ -26,10 +26,9 @@ class UserController
     public static function register($data)
     {
         if (empty($data)) {
-            require_once './view/register.php';
+            PageBuilder::build('register');
             exit(0);
         }
-
 
         if ($currentUser = UsersRepo::register($data['name'], $data['email'], $data['password'])) {
             $_SESSION['user'] = $currentUser;

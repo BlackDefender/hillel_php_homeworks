@@ -56,6 +56,15 @@ class UsersRepo
         }
     }
 
+    public static function getById($id)
+    {
+        $statement = self::connection()->prepare("SELECT id, name, email FROM users WHERE id = :id");
+        $statement->bindValue(':id', $id, PDO::PARAM_INT);
+        $statement->execute();
+        $statement->setFetchMode(PDO::FETCH_OBJ);
+        return $statement->fetch();
+    }
+
     public static function check($email, $password_raw)
     {
         try{
@@ -65,8 +74,8 @@ class UsersRepo
             $statement->execute([
                 ':email' => $email
             ]);
-            $statement->setFetchMode(PDO::FETCH_ASSOC);
-            $user = $statement->fetchObject();
+            $statement->setFetchMode(PDO::FETCH_OBJ);
+            $user = $statement->fetch();
 
             if($user->password === self::getPasswordHash(self::prepareValue($password_raw), $user->salt)){
                 return $user;

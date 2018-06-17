@@ -8,7 +8,7 @@ class PostController
             $post = PostsRepo::getPost($id);
             if($post){
                 $comments = CommentsRepo::get($post->id);
-                require_once 'view/post.php';
+                PageBuilder::build('post', ['post'=>$post, 'comments'=>$comments]);
             }else{
                 header('location: '.Config::getSiteUrl());
             }
@@ -28,7 +28,7 @@ class PostController
             header('location: ' . Config::getSiteUrl());
             exit(0);
         }
-        require_once 'view/add-post.php';
+        PageBuilder::build('add-post');
     }
 
     public static function removePost($data)
