@@ -2,18 +2,19 @@
 
 $routes = [
     'GET' => [
-        '/' => function(){PagesController::index();},
-        '/cart/' => function(){CartController::index();},
-        //'/product/' => function(){},
-        '/admin/' => function (){AdminMainController::index();},
-        '/admin/product/' => function (){AdminProductsController::product();},
-        '/admin/products/' => function (){AdminProductsController::products();},
-        '/admin/user/' => function (){AdminUsersController::user();},
-        '/admin/users/' => function (){AdminUsersController::users();},
+        '/' => 'PagesController::index',
+        '/cart/' => 'CartController::index',
+        //'/product/' => '',
+        '/admin/' => 'AdminMainController::index',
+        '/admin/product/' => 'AdminProductsController::product',
+        '/admin/products/' => 'AdminProductsController::products',
+        '/admin/user/' => 'AdminUsersController::user',
+        '/admin/users/' => 'AdminUsersController::users',
     ],
     'POST' => [
-        '/admin/product/' => function (){AdminProductsController::product();},
-        '/admin/product/remove/' => function (){AdminProductsController::removeProduct();},
-        '/cart/add/' => function(){CartController::add();},
+        '/admin/product/' => 'AdminProductsController::product',
+        '/admin/product/remove/' => 'AdminProductsController::removeProduct',
+        '/cart/add/' => 'CartController::add',
+        '/cart/clear/' => 'CartController::clear',
     ],
 ];

@@ -1,3 +1,5 @@
-<form action="" method="post">
+<div id="page-user">
+    <form action="" method="post">
 
-</form>
+    </form>
+</div>

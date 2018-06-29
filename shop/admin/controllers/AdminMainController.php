@@ -4,6 +4,7 @@ class AdminMainController extends BaseController
 {
     public static function index()
     {
-        PageBuilder::build('main');
+        $productsCount = ProductsRepo::getProductsCount();
+        PageBuilder::build('main', ['productsCount' => $productsCount]);
     }
 }

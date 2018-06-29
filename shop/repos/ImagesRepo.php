@@ -50,7 +50,7 @@ class ImagesRepo
         }
     }
 
-    public static function getImageUrl($imageName)
+    public static function getImageUrl($imageName, $size)
     {
         if(!empty($imageName)){
             $relativePath = Config::$imagesUploadDir.'originals/'.$imageName;
@@ -80,7 +80,9 @@ class ImagesRepo
 
     public static function resize($imageName, $size)
     {
-
+        $originalSize = getimagesize($imageName);
+        var_dump($originalSize);
+        exit(0);
     }
 
 }

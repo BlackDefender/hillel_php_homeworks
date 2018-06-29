@@ -4,7 +4,7 @@ class CartController extends BaseController
 
     public static function index()
     {
-        $cart = CartRepo::getCart();
+        $cart = CartRepo::getFullCart();
         PageBuilder::build('cart', ['cart' => $cart]);
     }
     public static function add()
@@ -34,6 +34,6 @@ class CartController extends BaseController
     public static function clear()
     {
         CartRepo::clearCart();
-        self::redirect('/cart');
+        self::redirect('cart/');
     }
 }

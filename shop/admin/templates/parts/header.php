@@ -10,8 +10,8 @@
 <body>
 
 <div class="page-container container-fluid">
-    <div class="row bg-secondary text-white">
-        <header class="col-12"><h1 class="text-center pb-4 pt-3">Зе Байкъ Шоп</h1></header>
+    <div class="row bg-secondary ">
+        <header class="col-12"><h1 class="text-center pb-4 pt-3"><a class="text-white" href="<?= SITE_URL; ?>admin/">Зе Байкъ Шоп</a></h1></header>
     </div>
     <div class="row">
         <aside class="col-2 bg-dark">

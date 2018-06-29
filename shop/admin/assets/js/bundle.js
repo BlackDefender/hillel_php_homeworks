@@ -38,6 +38,41 @@ if(document.getElementById('page-product')){
             variantsList.appendChild(variantElem.cloneNode(true));
         });
 
+        // remove variant button
+        variantsList.addEventListener('click', (e) => {
+            if(e.target.classList.contains('remove-variant')){
+                variantsList.removeChild(e.target.closest('.row'));
+            }
+        });
+
+        document.getElementById('product-form').addEventListener('submit', function (e) {
+
+            if(document.getElementById('product-title').value === ''){
+                e.preventDefault();
+                alert('Product should have title.');
+            }
+
+            const variantsInputs = this.querySelectorAll('input[name^="variants"]');
+            if(variantsInputs.length === 0){
+                e.preventDefault();
+                alert('Product should have minimum 1 variant.');
+                return;
+            }
+            const variantsInputsFiltered = Array.prototype.filter.call(variantsInputs, (input) => {
+                return input.type !== 'hidden';
+            });
+
+            const isVariantsFilled = variantsInputsFiltered.every((input) => {
+                return input.value !== '';
+            });
+            if(!isVariantsFilled){
+                e.preventDefault();
+                alert('All variants fields must be filled.');
+            }
+
+        });
+
+
     })();
 }
 if(document.getElementById('page-products')){

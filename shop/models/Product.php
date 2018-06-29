@@ -7,9 +7,9 @@ class Product
         return ImagesRepo::getImageUrl($this->illustration);
     }
 
-    public function getIllustration()
+    public function getIllustration($size = null)
     {
-        $illustration = ImagesRepo::getImageUrl($this->illustration);
+        $illustration = ImagesRepo::getImageUrl($this->illustration, $size);
         if(empty($illustration)){
             $illustration = ImagesRepo::getPlaceholder();
         }

@@ -1,9 +1,5 @@
 <?php
-var_dump($cart);
 if(isset($products)){
-//    echo '<pre>';
-//    var_dump($products);
-//    echo '</pre>';
     echo '<div class="row">';
     foreach ($products as $p){
         ?>

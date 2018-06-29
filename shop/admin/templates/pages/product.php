@@ -13,15 +13,18 @@ function _drawVariant($variantId, $title, $price, $amount)
         <div class="col-3">
             <input type="text" class="form-control" name="variants[amount][]" placeholder="Amount" value="<?= $amount; ?>">
         </div>
+        <div class="col-2">
+            <div class="btn btn-warning remove-variant">Remove variant</div>
+        </div>
     </div>
     <?php
 }
 
 ?>
 <div id="page-product">
-    <form action="" method="post" enctype="multipart/form-data" class="pt-4">
+    <form id="product-form" action="" method="post" enctype="multipart/form-data" class="pt-4">
         <div class="form-group">
-            <input type="text" name="title" placeholder="Product title" class="form-control" value="<?= isset($product) ? $product->title : ''; ?>">
+            <input type="text" name="title" id="product-title" placeholder="Product title" class="form-control" value="<?= isset($product) ? $product->title : ''; ?>">
         </div>
         <div class="form-group">
             <textarea name="description" class="form-control" placeholder="Product description"><?= isset($product) ? $product->description : ''; ?></textarea>
@@ -43,7 +46,7 @@ function _drawVariant($variantId, $title, $price, $amount)
         <div id="product-variants-list">
             <div class="row mt-2">
                 <div class="col-3"><h5>Title</h5></div>
-                <div class="col-3"><h5>Price</h5></div>
+                <div class="col-3"><h5>Price, UAH</h5></div>
                 <div class="col-3"><h5>Amount</h5></div>
             </div>
             <?php

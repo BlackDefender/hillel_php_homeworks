@@ -21,20 +21,29 @@ class CartRepo
         return $_SESSION[self::$cartFieldName];
     }
 
+    public static function getFullCart()
+    {
+        $cart = self::getCart();
+        foreach ($cart->purchases as $variantId => $purchase){
+            $purchase->variant = ProductsVariantsRepo::getVariantById($variantId);
+            $purchase->product = ProductsRepo::getProductById($purchase->variant->product_id);
+        }
+        return $cart;
+    }
+
     public static function addToCart($variantId)
     {
         $cart = self::getCart();
+        $variant = ProductsVariantsRepo::getVariantById($variantId);
         if(!isset($cart->purchases[$variantId])){
-            $variant = ProductsVariantsRepo::getVariantById($variantId);
             $cart->purchases[$variant->id] = new stdClass();
             $cart->purchases[$variant->id]->amount = 0;
-            $cart->purchases[$variant->id]->variant = $variant;
         }
 
         if($cart->purchases[$variantId]->amount + 1 <= $variant->amount){
             ++$cart->purchases[$variantId]->amount;
             ++$cart->totalProducts;
-            $cart->totalPrice += $cart->purchases[$variantId]->variant->price;
+            $cart->totalPrice += $variant->price;
         }
         return $cart->purchases[$variant->id]->amount;
     }
@@ -42,10 +51,11 @@ class CartRepo
     public static function subtractFromCart($variantId)
     {
         $cart = self::getCart();
+        $variant = ProductsVariantsRepo::getVariantById($variantId);
         if(!isset($cart->purchases[$variantId]) && $cart->purchases[$variantId]->amount > 0){
             --$cart->purchases[$variantId]->amount;
             --$cart->totalProducts;
-            $cart->totalPrice -= $cart->purchases[$variantId]->variant->price;
+            $cart->totalPrice -= $variant->price;
             return $cart->purchases[$variantId]->amount;
         }else{
             return 0;
@@ -55,8 +65,9 @@ class CartRepo
     public static function removeFromCart($variantId)
     {
         $cart = self::getCart();
+        $variant = ProductsVariantsRepo::getVariantById($variantId);
         $cart->totalProducts -= $cart->purchases[$variantId]->amount;
-        $cart->totalPrice -= $cart->purchases[$variantId]->variant->price * $cart->purchases[$variantId]->amount;
+        $cart->totalPrice -= $variant->price * $cart->purchases[$variantId]->amount;
         unset($cart->purchases[$variantId]);
     }
 

@@ -2,6 +2,15 @@
 
 class ProductsRepo extends Repo
 {
+
+    public static function getProductsCount()
+    {
+        $statement = self::connection()->prepare('SELECT count(*) as \'count\' FROM products');
+        $statement->execute();
+        $statement->setFetchMode(PDO::FETCH_OBJ);
+        return $statement->fetch();
+    }
+
     private static function getProductIllustration($productId)
     {
         $statement = self::connection()->prepare('SELECT illustration FROM products WHERE id = :id');
