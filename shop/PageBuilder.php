@@ -14,6 +14,8 @@ class PageBuilder
         if(self::$mode == 'catalog'){
             $cart = CartRepo::getCart();
         }
+        $messages = FlashMessages::getMessages();
+        $user = UsersRepo::getCurrentUser();
         if(isset($page) && file_exists(self::$templatesPath[self::$mode].'/pages/'.$page.'.php')){
             extract($arguments);
             define('PAGE', $page);
@@ -21,6 +23,7 @@ class PageBuilder
             require_once self::$templatesPath[self::$mode].'/parts/header.php';
             require_once self::$templatesPath[self::$mode].'/pages/'.$page.'.php';
         }else{
+            BaseController::setHttpStatus(404);
             define('PAGE', '404');
             require_once self::$templatesPath[self::$mode].'/parts/header.php';
             require_once self::$templatesPath[self::$mode].'/pages/404.php';

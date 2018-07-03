@@ -38,6 +38,7 @@ class CartRepo
         if(!isset($cart->purchases[$variantId])){
             $cart->purchases[$variant->id] = new stdClass();
             $cart->purchases[$variant->id]->amount = 0;
+            $cart->purchases[$variant->id]->price = $variant->price;
         }
 
         if($cart->purchases[$variantId]->amount + 1 <= $variant->amount){
@@ -52,13 +53,13 @@ class CartRepo
     {
         $cart = self::getCart();
         $variant = ProductsVariantsRepo::getVariantById($variantId);
-        if(!isset($cart->purchases[$variantId]) && $cart->purchases[$variantId]->amount > 0){
+        if(isset($cart->purchases[$variantId]) && $cart->purchases[$variantId]->amount > 1){
             --$cart->purchases[$variantId]->amount;
             --$cart->totalProducts;
             $cart->totalPrice -= $variant->price;
             return $cart->purchases[$variantId]->amount;
         }else{
-            return 0;
+            return 1;
         }
     }
 

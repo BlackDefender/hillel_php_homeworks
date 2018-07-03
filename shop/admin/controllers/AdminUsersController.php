@@ -4,8 +4,10 @@ class AdminUsersController extends BaseController
 {
     public static function users()
     {
-        PageBuilder::build('users');
+        $users = UsersRepo::getAllUsers();
+        PageBuilder::build('users', ['users'=>$users]);
     }
+
     public static function user()
     {
         PageBuilder::build('user');

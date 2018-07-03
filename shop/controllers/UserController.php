@@ -2,39 +2,41 @@
 
 class UserController extends BaseController
 {
-    public static function login($data)
+    public static function loginPage()
     {
-        if (empty($data)) {
-            PageBuilder::build('login');
-            exit(0);
-        }
+        PageBuilder::build('login');
+    }
 
-        if ($currentUser = UsersRepo::check($data['email'], $data['password'])) {
-            $_SESSION['user'] = $currentUser;
-            header('Location: '.Config::getSiteUrl());
+    public static function login()
+    {
+        UsersRepo::login($_POST['email'], $_POST['password']);
+        $user = UsersRepo::getCurrentUser();
+        if ($user) {
+            self::redirect('/');
         } else {
-            header('location: '.Config::getSiteUrl().'user/login');
+            FlashMessages::addMessage('Incorrect login', FlashMessages::MESSAGE_TYPE_ERROR);
+            self::redirect('user/login');
         }
     }
 
-    public static function loguot($data)
+    public static function logout()
     {
-        unset($_SESSION['user']);
-        header('Location: '.Config::getSiteUrl());
+        UsersRepo::logout();
+        self::redirect('/');
     }
 
-    public static function register($data)
+    public static function registerPage()
     {
-        if (empty($data)) {
-            PageBuilder::build('register');
-            exit(0);
-        }
+        PageBuilder::build('register');
+    }
 
-        if ($currentUser = UsersRepo::register($data['name'], $data['email'], $data['password'])) {
+    public static function register()
+    {
+        if ($currentUser = UsersRepo::register($_POST['name'], $_POST['email'], $_POST['password'])) {
             $_SESSION['user'] = $currentUser;
-            header('Location: '.Config::getSiteUrl());
+            self::redirect('/');
         } else {
-            header('location: '.Config::getSiteUrl().'user/register');
+            self::redirect('user/register');
         }
     }
 }

@@ -50,18 +50,22 @@ class ImagesRepo
         }
     }
 
-    public static function getImageUrl($imageName, $size)
+    public static function getImageUrl($imageName, $size = null)
     {
-        if(!empty($imageName)){
-            $relativePath = Config::$imagesUploadDir.'originals/'.$imageName;
-            $fullPath = Config::getSiteDir().$relativePath;
-            if(file_exists($fullPath)){
-                return Config::getSiteUrl().$relativePath;
+        if(!empty($size)){
+            return self::resize($imageName, $size);
+        }else{
+            if(!empty($imageName)){
+                $relativePath = Config::$imagesUploadDir.'originals/'.$imageName;
+                $fullPath = Config::getSiteDir().$relativePath;
+                if(file_exists($fullPath)){
+                    return Config::getSiteUrl().$relativePath;
+                }else{
+                    return '';
+                }
             }else{
                 return '';
             }
-        }else{
-            return '';
         }
     }
 
@@ -78,11 +82,45 @@ class ImagesRepo
         }
     }
 
-    public static function resize($imageName, $size)
+    private static function resize($imageName, $args)
     {
-        $originalSize = getimagesize($imageName);
-        var_dump($originalSize);
-        exit(0);
+        if(!empty($imageName)){
+            $src = Config::getSiteUrl().Config::$imagesUploadDir.'originals/'.$imageName;
+        }else{
+            $src = 'no_photo';
+        }
+        $args['src'] = $src;
+        $kt = new Kama_Make_Thumb($args);
+        return $kt->do_thumbnail();
+    }
+
+    public static function clearCache()
+    {
+        $pattern = Config::getSiteDir().Config::$imagesUploadDir.'cache/*';
+        $files = glob($pattern);
+        foreach($files as $file){
+            if(is_file($file))
+                unlink($file);
+        }
+    }
+
+    public static function cacheInfo()
+    {
+        $info = (object)[
+            'filesCount' => 0,
+            'size' => 0,
+        ];
+        $pattern = Config::getSiteDir().Config::$imagesUploadDir.'cache/*';
+        $files = glob($pattern);
+        foreach($files as $file){
+            if(is_file($file)){
+                ++$info->filesCount;
+                $info->size += filesize($file);
+            }
+        }
+        $info->size = round($info->size / (1024*1024), 2);
+
+        return $info;
     }
 
 }

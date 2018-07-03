@@ -8,7 +8,7 @@ spl_autoload_register(function ($className) {
         './models/',
         './repos/',
         './admin/controllers/',
-
+        './utils/',
     ];
     foreach ($pathList as $path){
         if(file_exists($path.$className.'.php')){
@@ -20,6 +20,8 @@ spl_autoload_register(function ($className) {
 
 session_start();
 
+$acl = new ACL(Config::getRequest());
+$acl->check();
+
 require_once 'routes.php';
-$router = new Router($routes);
-$router->serve();
+new Router($routes);

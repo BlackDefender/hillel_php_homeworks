@@ -2,6 +2,8 @@
 
 class UsersRepo extends Repo
 {
+    private static $sessionUserFieldName = 'user';
+
     private static function generateSalt()
     {
         $saltLength = rand(40, 50);
@@ -24,25 +26,55 @@ class UsersRepo extends Repo
         return htmlspecialchars(trim($value));
     }
 
-    public static function register($name, $email, $password)
+    public static function getCurrentUser()
+    {
+        if(isset($_SESSION[self::$sessionUserFieldName])){
+            return $_SESSION[self::$sessionUserFieldName];
+        }else{
+            return null;
+        }
+    }
+
+    private static function setCurrentUser($user)
+    {
+        $_SESSION[self::$sessionUserFieldName] = $user;
+    }
+
+    public static function logout()
+    {
+        unset($_SESSION[self::$sessionUserFieldName]);
+    }
+
+    public static function autoRegister($name, $email)
+    {
+        $password = self::generateSalt();
+        $newUser = self::register($name, $email, $password, User::ROLE_CUSTOMER, User::REGISTRATION_TYPE_AUTO);
+        return $newUser;
+    }
+
+    public static function register($name, $email, $password, $role = User::ROLE_CUSTOMER, $registrationType = User::REGISTRATION_TYPE_MANUAL)
     {
         try {
-            $newUser = new stdClass();
-            $newUser->salt = self::generateSalt();
-            $newUser->name = self::prepareValue($name);
-            $newUser->email = self::prepareValue($email);
-            $newUser->password = self::getPasswordHash(self::prepareValue($password), $newUser->salt);
-
-            $statement = self::connection()->prepare("INSERT INTO users SET name = :name, email = :email, salt = :salt, password = :password");
+            $salt = self::generateSalt();
+            $password = self::getPasswordHash(self::prepareValue($password), $salt);
+            $statement = self::connection()->prepare("INSERT INTO users SET name = :name,
+                                                                                      email = :email,
+                                                                                      salt = :salt,
+                                                                                      password = :password,
+                                                                                      role = :role,
+                                                                                      registration_type = :registration_type");
             $statement->execute([
-                ':name' => $newUser->name,
-                ':email' => $newUser->email,
-                ':salt' => $newUser->salt,
-                ':password' => $newUser->password,
+                ':name' => self::prepareValue($name),
+                ':email' => self::prepareValue($email),
+                ':salt' => $salt,
+                ':password' => $password,
+                ':role' => $role,
+                ':registration_type' => $registrationType,
             ]);
 
-            $newUser->id = self::connection()->lastInsertId();
-            return $newUser;
+            $newUserId = self::connection()->lastInsertId();
+            return self::getById($newUserId);
+
         } catch (PDOException $e) {
             return false;
         }
@@ -50,15 +82,22 @@ class UsersRepo extends Repo
 
     public static function getById($id)
     {
-        $statement = self::connection()->prepare("SELECT id, name, email FROM users WHERE id = :id");
+        $statement = self::connection()->prepare("SELECT id, name, email, role FROM users WHERE id = :id");
         $statement->bindValue(':id', $id, PDO::PARAM_INT);
         $statement->execute();
-        $statement->setFetchMode(PDO::FETCH_OBJ);
+        $statement->setFetchMode(PDO::FETCH_CLASS, 'User');
         return $statement->fetch();
     }
 
-    public static function check($email, $password_raw)
+    public static function getAllUsers()
     {
+        $res = self::connection()->query('SELECT * FROM users');
+        return $res->fetchAll(PDO::FETCH_CLASS, 'User');
+    }
+
+    public static function login($email, $password_raw)
+    {
+        $currentUser = null;
         try{
             $email = self::prepareValue($email);
 
@@ -66,16 +105,24 @@ class UsersRepo extends Repo
             $statement->execute([
                 ':email' => $email
             ]);
-            $statement->setFetchMode(PDO::FETCH_OBJ);
+            $statement->setFetchMode(PDO::FETCH_CLASS, 'User');
             $user = $statement->fetch();
 
             if($user->password === self::getPasswordHash(self::prepareValue($password_raw), $user->salt)){
-                return $user;
-            }else{
-                return false;
+                $currentUser = $user;
             }
-        } catch (PDOException $e) {
-            return false;
-        }
+        } catch (PDOException $e) {}
+
+        self::setCurrentUser($currentUser);
     }
+
+    public static function getUserByEmail($email)
+    {
+        $statement = self::connection()->prepare("SELECT id, name, email, role FROM users WHERE email = :email");
+        $statement->bindValue(':email', $email, PDO::PARAM_STR);
+        $statement->execute();
+        $statement->setFetchMode(PDO::FETCH_CLASS, 'User');
+        return $statement->fetch();
+    }
+
 }
